@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
         fprintf(stderr,"ERROR, no port provided\n");
         exit(1);
     }
+    
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)  {
         fprintf(stderr,"ERROR opening socket\n");
