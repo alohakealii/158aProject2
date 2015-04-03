@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
+#include <sys/time.h>
 
 void error(const char *msg)
 {
@@ -48,6 +49,27 @@ void rcvTCP(int sockfd, char *buffer, char *message, int size, int i) {
     }
 }
 
+void timeSet(unsigned long *times, struct timeval *startTime, struct timeval *finishTime, int i) {
+    // finish time
+    gettimeofday(finishTime, NULL);
+    printf("Start time: %lu.%lu\nFinish time: %lu.%lu\n", startTime->tv_sec, startTime->tv_usec, finishTime->tv_sec, finishTime->tv_usec);
+    unsigned long totalSec = finishTime->tv_sec - startTime->tv_sec;
+    unsigned long usec;
+    if (finishTime->tv_usec > startTime->tv_usec) {
+        usec = finishTime->tv_usec - startTime->tv_usec;
+    }
+    else {
+        usec = 1000000 - startTime->tv_usec + finishTime->tv_usec;
+    }
+    unsigned long total = totalSec * 1000000 + usec;
+
+    // store time
+    times[i] = total;
+
+    // start time
+    gettimeofday(startTime, NULL);
+}
+
 int main(int argc, char *argv[])
 {
     int sockfd, portno, n;
@@ -80,58 +102,81 @@ int main(int argc, char *argv[])
     if (connect(sockfd,(struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
         error("ERROR connecting");
 
+    // start time
+    struct timeval startTime, finishTime;
+    unsigned long times[6];
+    gettimeofday(&startTime, NULL);
+
     int i;
     for (i = 1; i < 101; i++) {
-        memset(buffer,'A',1024);
-        n = write(sockfd,buffer,strlen(buffer));
+        memset(message,'A',1024);
+        n = write(sockfd,message,strlen(message));
         if (n < 0) 
             error("ERROR writing to socket");
-        printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
+        printf("S: %cx%d %d   ",message[0], strlen(message), i);
         rcvTCP(sockfd, buffer, message, 1024, i);
     }
+
+    timeSet(times, &startTime, &finishTime, 0);
+
     for (i = 1; i < 101; i++) {
-        memset(buffer,'B',4096);
-        n = write(sockfd,buffer,strlen(buffer));
+        memset(message,'B',4096);
+        n = write(sockfd,message,strlen(message));
         if (n < 0) 
             error("ERROR writing to socket");
-        printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
+        printf("S: %cx%d %d   ",message[0], strlen(message), i);
         rcvTCP(sockfd, buffer, message, 4096, i);
     }
+
+    timeSet(times, &startTime, &finishTime, 1);
+
     for (i = 1; i < 101; i++) {
-        memset(buffer,'C',8192);
-        n = write(sockfd,buffer,strlen(buffer));
+        memset(message,'C',8192);
+        n = write(sockfd,message,strlen(message));
         if (n < 0) 
             error("ERROR writing to socket");
-        printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
+        printf("S: %cx%d %d   ",message[0], strlen(message), i);
         rcvTCP(sockfd, buffer, message, 8192, i);
     }
+
+    timeSet(times, &startTime, &finishTime, 2);
+
     for (i = 1; i < 101; i++) {
-        memset(buffer,'D',16384);
-        n = write(sockfd,buffer,strlen(buffer));
+        memset(message,'D',16384);
+        n = write(sockfd,message,strlen(message));
         if (n < 0) 
             error("ERROR writing to socket");
-        printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
+        printf("S: %cx%d %d   ",message[0], strlen(message), i);
         rcvTCP(sockfd, buffer, message, 16384, i);
     }
+
+    timeSet(times, &startTime, &finishTime, 3);
+
     for (i = 1; i < 101; i++) {
-        memset(buffer,'E',32768);
-        n = write(sockfd,buffer,strlen(buffer));
+        memset(message,'E',32768);
+        n = write(sockfd,message,strlen(message));
         if (n < 0) 
             error("ERROR writing to socket");
-        printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
+        printf("S: %cx%d %d   ",message[0], strlen(message), i);
         rcvTCP(sockfd, buffer, message, 32768, i);
     }
+
+    timeSet(times, &startTime, &finishTime, 4);
+
     for (i = 1; i < 101; i++) {
-        memset(buffer, 'F', sizeof(buffer));
-        n = write(sockfd,buffer,strlen(buffer));
+        memset(message, 'F', sizeof(message));
+        n = write(sockfd,message,strlen(message));
         if (n < 0) 
             error("ERROR writing to socket");
-        printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
+        printf("S: %cx%d %d   ",message[0], strlen(message), i);
         rcvTCP(sockfd, buffer, message, 64000, i);
     }
-    memset(buffer, 0, sizeof(buffer));
-    sprintf(buffer, "done");
-    n = write(sockfd,buffer,strlen(buffer));
+
+    timeSet(times, &startTime, &finishTime, 5);
+
+    memset(message, 0, sizeof(message));
+    sprintf(message, "done");
+    n = write(sockfd,message,strlen(message));
     if (n < 0) 
          error("ERROR writing to socket");
     memset(buffer, 0, sizeof(buffer));
@@ -139,6 +184,24 @@ int main(int argc, char *argv[])
     if (n < 0)
         error("ERROR reading from socket");
     printf("Last receive: %s\n", buffer);
+
+    int size;
+    printf("\nTime elapsed for each run:\n");
+    for (i = 0; i < 6; i++) {
+        if (i == 0)
+            size = 1 * 1024;
+        else if (i == 1)
+            size = 4 * 1024;
+        else if (i == 2)
+            size = 8 * 1024;
+        else if (i == 3)
+            size = 16 * 1024;
+        else if (i == 4)
+            size = 32 * 1024;
+        else
+            size = 64000;
+        printf("%6d bytes - Total: %8luus  Average: %6luus\n", size, times[i], times[i]/100);
+    }
     close(sockfd);
     return 0;
 }

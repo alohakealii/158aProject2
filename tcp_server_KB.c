@@ -18,6 +18,8 @@ void rcvTCPandSend(int sockfd, char *buffer, char *message, int size, int i) {
         n = read(sockfd, buffer, sizeof(buffer));
         if (n < 0) 
              error("ERROR reading from socket");
+        if (n == 0)
+            printf("read == 0\n");
 
         // if there are more bytes than fit for the current message
         if (strlen(message) + strlen(buffer) > size) {
