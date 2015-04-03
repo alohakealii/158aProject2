@@ -12,18 +12,41 @@ void error(const char *msg)
     exit(1);
 }
 
-void rcvTCP(int sockfd, char *buffer, char *message, int size, int i) {
-    memset(message, 0, sizeof(message));
+void rcvTCPandSend(int sockfd, char *buffer, char *message, int size, int i) {
     int n;
     while (strlen(message) < size) {
-        memset(buffer, 0, sizeof(buffer));
-        n = read(sockfd,buffer,1024);
+        n = read(sockfd, buffer, sizeof(buffer));
         if (n < 0) 
              error("ERROR reading from socket");
-        strcat(message, buffer);
-        printf("strlen(message)=%d  size=%d\n", strlen(message), size);
+
+        // if there are more bytes than fit for the current message
+        if (strlen(message) + strlen(buffer) > size) {
+            int amount = size - strlen(message); // calculate bytes for current message
+            int j;
+
+            // copy remaining byes for current message
+            for (j = 0; j < amount; j++) {
+                message[strlen(message)] = buffer[j];
+            }
+
+            // zero the rest of the buffer, leaving the excess belonging to next message
+            memset(buffer + amount, 0, sizeof(buffer) - amount);
+        }
+        else {
+            strcat(message, buffer);
+            memset(buffer, 0, sizeof(buffer));
+        }
     }
     printf("R: %cx%d %d   ",message[0], strlen(message), i);
+    n = write(sockfd, message, strlen(message));
+    if (n < 0)
+        error("Error writing to socket");
+    printf("S: %cx%d %d\n", message[0], strlen(message), i);
+    memset(message, 0, sizeof(message));
+    if (strlen(buffer) > 0) {
+        strncpy(message, buffer, strlen(buffer));
+        memset(buffer, 0, sizeof(buffer));
+    }
 }
 
 int main(int argc, char *argv[])
@@ -32,6 +55,8 @@ int main(int argc, char *argv[])
     socklen_t clilen;
     char buffer[64000];
     char message[64000];
+    memset(message, 0, sizeof(message));
+    memset(buffer, 0, sizeof(buffer));
     struct sockaddr_in serv_addr, cli_addr;
     clilen = sizeof(cli_addr);
     if (argc < 2) {
@@ -64,8 +89,7 @@ int main(int argc, char *argv[])
     int n;
     int size = 0;
     for (i = 0; i < 6; i++) {
-        memset(message, 0, sizeof(message));
-        memset(buffer, 0, sizeof(buffer));
+
         if (i == 0)
             size = 1 * 1024;
         else if (i == 1)
@@ -80,11 +104,7 @@ int main(int argc, char *argv[])
             size = 64000;
         int j;
         for (j = 1; j < 101; j++) {
-            rcvTCP(newsockfd, buffer, message, size, j);
-            n = write(newsockfd, message, strlen(message));
-            if (n < 0)
-                error("Error writing to socket");
-            printf("S: %cx%d %d\n", message[0], strlen(message), j);
+            rcvTCPandSend(newsockfd, buffer, message, size, j);
         }      
     }
 

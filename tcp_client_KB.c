@@ -14,16 +14,38 @@ void error(const char *msg)
 }
 
 void rcvTCP(int sockfd, char *buffer, char *message, int size, int i) {
-    memset(message, 0, sizeof(message));
     int n;
+    memset(buffer, 0, sizeof(buffer));
+    memset(message, 0, sizeof(message));
     while (strlen(message) < size) {
-        memset(buffer, 0, sizeof(buffer));
         n = read(sockfd, buffer, sizeof(buffer));
         if (n < 0) 
              error("ERROR reading from socket");
-        strcat(message, buffer);
+
+        // if there are more bytes than fit for the current message
+        if (strlen(message) + strlen(buffer) > size) {
+            int amount = size - strlen(message); // calculate bytes for current message
+            int j;
+
+            // copy remaining byes for current message
+            for (j = 0; j < amount; j++) {
+                message[strlen(message)] = buffer[j];
+            }
+
+            // zero the rest of the buffer, leaving the excess belonging to next message
+            memset(buffer + amount, 0, sizeof(buffer) - amount);
+        }
+        else {
+            strcat(message, buffer);
+            memset(buffer, 0, sizeof(buffer));
+        }
     }
     printf("R: %cx%d %d\n",message[0], strlen(message), i);
+    memset(message, 0, sizeof(message));
+    if (strlen(buffer) > 0) {
+        strncpy(message, buffer, strlen(buffer));
+        memset(buffer, 0, sizeof(buffer));
+    }
 }
 
 int main(int argc, char *argv[])
@@ -74,7 +96,6 @@ int main(int argc, char *argv[])
             error("ERROR writing to socket");
         printf("S: %cx%d %d   ",buffer[0], strlen(buffer), i);
         rcvTCP(sockfd, buffer, message, 4096, i);
-
     }
     for (i = 1; i < 101; i++) {
         memset(buffer,'C',8192);
