@@ -1,0 +1,20 @@
+README
+
+Setting up server:
+	1)	Open and save server file
+	2)	In the terminal, navigate to the location where the server file was saved
+	3)	Compile the file using: gcc -o <serverfilename> <serverfilename.c>
+	4)	Run the file using: ./serverfilename <port>
+	5)	Allow your computer to accept connections
+
+Setting up client:
+	1)	Open and save client file
+	2)	In the terminal, navigate to the location where the client file was saved
+	3)	Compile the file using: gcc -o <clientfilename> <clientfilename.c>
+	4)	Be sure that your server is running prior to starting client
+	5)	Run the file using: ./clientfilename <server’s IP address> <port>
+
+Notes:
+1)	Port numbers for server and client must be same and unused by other connections
+2) 	Start up the server before starting the client
+
