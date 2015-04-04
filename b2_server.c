@@ -30,28 +30,18 @@ int main(int argc, char *argv[])
 
     socklen_t clilen = sizeof(cli_addr);
 
-    // int rounds = 6;
-
-    // int KB[6] = {1, 4, 8, 16, 32, 64};
-    char message[64000];
+    char message;
 
     int i;
-    while (strlen(message) != 42) {
-        memset(&message, 0, strlen(message));
-    // printf("About to realloc to %2dKB\n", KB[i]);
-    // realloc(message, KB[i] * 1024);
-    // printf("Realloc'd successfully\n");
-        n = recvfrom(sockfd, message, sizeof(message), 0, (struct sockaddr *)&cli_addr, &clilen);
+    for (i = 0; i < 1000; i++) {
+        n = recvfrom(sockfd, &message, 1, 0, (struct sockaddr *)&cli_addr, &clilen);
         if (n < 0) {
             fprintf(stderr,"ERROR reading from socket\n");
             exit(1);
         }
-        printf("Received strlen(message) = %d\n", strlen(message));
-        // printf("Received %2dKB, cycle %3d\n", KB[i], j);
-        // printf("Here is the message: %s\n", message);
+        printf("Here is the message: %c\n", message);
 
-        n = sendto(sockfd, message, strlen(message), 0, (struct sockaddr *)&cli_addr, clilen);
-        // printf("Sent %2dKB, cycle %3d\n", strlen(message), j);
+        n = sendto(sockfd, &message, 1, 0, (struct sockaddr *)&cli_addr, clilen);
         if (n < 0) {
             fprintf(stderr,"ERROR writing to socket\n");
             exit(1);
