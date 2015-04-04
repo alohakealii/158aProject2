@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <stdbool.h>
 
 void error(const char *msg)
 {
@@ -30,14 +31,14 @@ int main(int argc, char *argv[])
      if (sockfd < 0) 
         error("ERROR opening socket");
 
-    int intarg = 0;
+    bool intarg = true;
     socklen_t intarg_len = sizeof(intarg);
     if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, (char *)&intarg, sizeof(intarg)) < 0)
         printf("Error setsockopt\n");
 
     if (getsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &intarg, &intarg_len) < 0)
         printf("Error getsockopt\n");
-    printf("After set and get: intarg = %d\n", intarg);
+    printf("After set and get: intarg = %d  len = %d\n", intarg, sizeof(intarg_len));
      
      bzero((char *) &serv_addr, sizeof(serv_addr));
      portno = atoi(argv[1]);
