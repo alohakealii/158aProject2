@@ -28,6 +28,22 @@ There are not any lost packets in TCP.
 Describe the network:
 The server and client are on the same network, and the systems are relatively close in proximity. The client’s IP addresses were 10.189.64.22 and ____MATTS IP____ and the server’s IP address was 10.189.1.236. 
 
+——————————
+
+TCP SOCKOPT
+
+Round-trip time vs. message size:
+The fastest method of transferring packets across the network is with TCP_NODELAY. It is slightly better than having No Options. TCP_NODELAY and No Options follow steady exponential trends, while TCP_MAXSEG is more erratic and can have a varying RTT vs MSG size. TCP_MAXSEG has the worst RTT per message size. 
+
+Throughput vs. message size:
+TCP_MAXSEG has the lowest throughputs. TCP_NODELAY performs the best for messages larger than 8KB, but worse than No Options when the message size is 4KB or less in size. No Options has the most steady throughput vs message size because there is no manipulation to the network. All three options, No Options, TCP_NODELAY, and TCP_MAXSEG all have very similar results when sending a message size of 64KB.
+
+Number of lost packets vs. message size:
+There are not any lost packets in TCP.
+
+
+
+
 
 
 
