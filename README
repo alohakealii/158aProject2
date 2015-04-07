@@ -10,7 +10,8 @@ Setting up server:
 Setting up client:
 	1)	Open and save client file
 	2)	In the terminal, navigate to the location where the client file was saved
-	3)	Compile the file using: gcc -o <clientfilename> <clientfilename.c>
+	3)	To compile the TCP client file, use: gcc -o <clientfilename> <clientfilename.c>
+		To compile the UDP client file, use: gcc -pthread -o <clientfilename> <clientfilename.c>
 	4)	Be sure that your server is running prior to starting client
 	5)	Run the file using: ./clientfilename <server’s IP address> <port>
 
