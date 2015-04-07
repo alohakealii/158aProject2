@@ -5,6 +5,7 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 
 void error(const char *msg)
 {
