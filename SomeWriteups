@@ -1,5 +1,5 @@
-Round-trip time vs. message size
-	▪	The RTT increased exponentially as the message sizes got larger. This is not a surprising trend to see. When the message size increases, then more data needs to be transferred so it takes longer. A message size of 1KB transfers practically instantaneously, while a 16KB message takes about 100000 microseconds. A 32KB message takes twice as long as a 16KB message, and a 64KB message takes about 600000 microseconds. 
+Round-trip time vs. message size:
+The RTT increased exponentially as the message sizes got larger. This is not a surprising trend to see. When the message size increases, then more data needs to be transferred so it takes longer. A message size of 1KB transfers practically instantaneously, while a 16KB message takes about 100000 microseconds. A 32KB message takes twice as long as a 16KB message, and a 64KB message takes about 600000 microseconds. 
 
-Describe the network
-	▪	The server and client are on the same network, and the systems are relatively close in proximity. The client’s IP address was 10.189.64.22 and the server’s IP address was 10.189.1.236. 
+Describe the network:
+The server and client are on the same network, and the systems are relatively close in proximity. The client’s IP address was 10.189.64.22 and the server’s IP address was 10.189.1.236. 
