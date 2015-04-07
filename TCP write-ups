@@ -1,0 +1,13 @@
+TCP ONLY
+
+Round-trip time vs. message size:
+The RTT increased exponentially as the message sizes got larger. This is not a surprising trend to see. When the message size increases, then more data needs to be transferred so it takes longer. A message size of 1KB transfers practically instantaneously, while a 16KB message takes 10666 microseconds. A 32KB message takes twice as long as a 16KB message, and a 64KB message takes 613171 microseconds. 
+
+Throughput vs. message size:
+For 1KB messages, the throughput is 93.76 bits per second. When the message size is 4KB, the throughput is 101.3 bits per second. At 8KB, the throughput is 190 bits per second. At 16KB, the throughput is 174 bits per second. At 32KB, the throughput is 153.8 bits per second. At 64KB, the throughput is 104 bits per second. This trend shows that as the message size increases, fewer bits per second can be transferred to the receiver. The graph shows that the most optimal message size to get the highest throughput is 8KB. 
+
+Number of lost packets vs. message size:
+There are not any lost packets in TCP. 
+
+Describe the network:
+The server and client are on the same network, and the systems are relatively close in proximity. The client’s IP address was 10.189.64.22 and the server’s IP address was 10.189.1.236. 
