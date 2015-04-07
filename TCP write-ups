@@ -11,3 +11,27 @@ There are not any lost packets in TCP.
 
 Describe the network:
 The server and client are on the same network, and the systems are relatively close in proximity. The client’s IP address was 10.189.64.22 and the server’s IP address was 10.189.1.236. 
+
+——————
+
+TCP TWO CLIENTS
+
+Round-trip time vs. message size:
+Results for TCP two clients and one client followed similar paths of increasing exponentially. The RTTs were longer when there were two clients sending messages to the server. For example, with a message size of 1KB, the RTTs for two clients were 12496 microseconds and 14220 microseconds. For one client, the RTT was 10666 microseconds. As the message sizes get larger, the RTT vs MSG Size gets slower, but not a huge difference between one and two clients. For 64KB, the RTTs are 544056 microseconds and 631111 microseconds. The RTT for 64KB with just one client was 613171 microseconds. 
+
+Throughput vs. message size:
+With two clients, the throughput vs message size follows the same trend as one client, but it’s optimal performance was at 16KB. Throughput times in bits per second were all within the same range for both one and two clients.
+
+Number of lost packets vs. message size:
+There are not any lost packets in TCP.
+
+Describe the network:
+The server and client are on the same network, and the systems are relatively close in proximity. The client’s IP addresses were 10.189.64.22 and ____MATTS IP____ and the server’s IP address was 10.189.1.236. 
+
+
+
+
+
+
+
+
