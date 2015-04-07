@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         if (n < 0)
             error("ERROR reading from socket");
         printf("Message: %s\n",buffer);
-        n = write(newsockfd,&buffer,11);
+        n = write(newsockfd,&buffer,1);
         if (n < 0)
             error("ERROR writing to socket");
      }

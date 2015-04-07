@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     //loop 1000 times
     int i;
     for (i = 0; i < 1000; i++) {
-        n = write(sockfd,buffer,strlen(buffer));
+        n = write(sockfd,buffer,1);
         if (n < 0) 
             error("ERROR writing to socket");
         bzero(buffer,256);
